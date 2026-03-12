@@ -1,0 +1,210 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+
+export default function CarWebsite() {
+  const specs = [
+    { label: "Модель", value: "ВАЗ‑2112" },
+    { label: "Двигатель", value: "1.6 бензин" },
+    { label: "Мощность", value: "106 л.с." },
+    { label: "Привод", value: "Передний" },
+    { label: "Коробка передач", value: "Механическая" }
+  ];
+
+  const images = ["/car1.jpg", "/car2.jpg", "/car3.jpg"];
+
+  const [active, setActive] = useState(0);
+  const [started, setStarted] = useState(false);
+  const audioRef = useRef(null);
+
+  const startEngine = () => {
+    setStarted(true);
+    if (audioRef.current) {
+      audioRef.current.play().catch(() => {});
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      {/* ENGINE START SCREEN */}
+      <AnimatePresence>
+        {!started && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50"
+          >
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1 }}
+              className="text-5xl tracking-widest mb-10"
+            >
+              М650УТ05
+            </motion.h1>
+
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
+              onClick={startEngine}
+              className="px-10 py-4 border border-white rounded-full tracking-widest"
+            >
+              START ENGINE
+            </motion.button>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="mt-6 text-gray-400 text-sm"
+            >
+              tap to start
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* engine sound */}
+      <audio ref={audioRef} src="/engine.mp3" preload="auto" />
+
+      {/* HERO — cinematic intro */}
+      <section className="relative h-screen flex items-center justify-center text-center overflow-hidden">
+        <motion.img
+          src={images[0]}
+          alt="Моя машина"
+          initial={{ scale: 1.2, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.6 }}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        <div className="absolute inset-0 bg-black/60" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 80 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 1 }}
+          className="relative z-10 px-4"
+        >
+          <motion.h1
+            className="text-6xl md:text-7xl font-bold tracking-widest"
+            initial={{ letterSpacing: "0.5em", opacity: 0 }}
+            animate={{ letterSpacing: "0.1em", opacity: 1 }}
+            transition={{ duration: 1.2 }}
+          >
+            М650УТ05
+          </motion.h1>
+
+          <motion.p
+            className="mt-6 text-lg text-gray-300"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+          >
+            cinematic car project
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5 }}
+          >
+            <Button className="mt-8">Смотреть проект</Button>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* GALLERY */}
+      <section className="max-w-6xl mx-auto py-20 px-4">
+        <motion.h2
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl font-semibold mb-12 text-center"
+        >
+          Галерея
+        </motion.h2>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {images.map((src, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setActive(index)}
+              className="cursor-pointer overflow-hidden rounded-2xl"
+            >
+              <motion.img
+                src={src}
+                alt={`Фото ${index + 1}`}
+                className="object-cover w-full h-72"
+                whileHover={{ scale: 1.15 }}
+                transition={{ duration: 0.6 }}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* SPECS */}
+      <section className="bg-neutral-900 py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl font-semibold mb-12 text-center"
+          >
+            Характеристики
+          </motion.h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {specs.map((spec, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="bg-black border-neutral-800 rounded-2xl">
+                  <CardContent className="p-6">
+                    <p className="text-sm text-gray-400">{spec.label}</p>
+                    <p className="text-xl font-medium">{spec.value}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section className="max-w-3xl mx-auto py-24 px-4 text-center">
+        <motion.h2
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="text-4xl font-semibold mb-6"
+        >
+          История машины
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-gray-400 leading-relaxed"
+        >
+          Этот автомобиль — личный проект. Здесь можно рассказать историю
+          покупки, доработки, планы на тюнинг и атмосферу ночных поездок.
+        </motion.p>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-black text-white py-10 text-center border-t border-neutral-800">
+        <p className="tracking-widest">© {new Date().getFullYear()} М650УТ05</p>
+      </footer>
+    </div>
+  );
+}
